@@ -1,3 +1,7 @@
 /venv
 
 */submission
+
+.pytest_cache
+*.pyc
+*.pdf
