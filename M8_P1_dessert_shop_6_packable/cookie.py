@@ -8,6 +8,8 @@ class Cookie(DessertItem):
         self._cookie_quantity: int = cookie_quantity
         self._price_per_dozen: float = price_per_dozen
 
+        self.packaging = "Box"
+
 
     @property
     def cookie_quantity(self) -> int:
@@ -56,7 +58,7 @@ class Cookie(DessertItem):
         detail = f"{self.cookie_quantity} @ ${self.price_per_dozen:.2f}/dozen:"
 
         lines = [
-            f"{self.name} Cookies",
+            f"{self.name} Cookies ({self.packaging})",
             f"{detail:<47} {price_str:<10} {tax_str}"
         ]
 

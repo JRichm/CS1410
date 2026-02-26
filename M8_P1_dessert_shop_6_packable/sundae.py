@@ -15,6 +15,8 @@ class Sundae(IceCream):
         self._topping_name: str = topping_name
         self._topping_price: float = topping_price
 
+        self.packaging = "Boat"
+
 
     @property
     def topping_name(self) -> str:
@@ -63,7 +65,7 @@ class Sundae(IceCream):
         detail = f"{self.topping_name} topping @ ${self.topping_price:.2f}:"
 
         lines = [
-            f"{self.topping_name} {self.name} Sundae",
+            f"{self.topping_name} {self.name} Sundae ({self.packaging})",
             f"{self.scoop_count} scoops of {self.name} ice cream @ ${self.price_per_scoop:.2f}/scoop",
             f"{detail:<47} {price_str:<10} {tax_str}",
         ]

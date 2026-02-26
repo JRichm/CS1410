@@ -8,6 +8,8 @@ class Candy(DessertItem):
         self._candy_weight: float = candy_weight
         self._price_per_pound: float = price_per_pound
 
+        self.packaging = "Bag"
+
 
     @property
     def candy_weight(self) -> float:
@@ -56,7 +58,7 @@ class Candy(DessertItem):
         detail = f"{self.candy_weight} lbs. @ ${self.price_per_pound}/lb.:"
 
         lines = [
-            f"{self.name} Candy",
+            f"{self.name} Candy ({self.packaging})",
             f"{detail:<47} {price_str:<10} {tax_str}"
         ]
 

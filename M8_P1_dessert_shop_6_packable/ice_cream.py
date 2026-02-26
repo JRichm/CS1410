@@ -7,6 +7,8 @@ class IceCream(DessertItem):
         super().__init__(name)
         self._scoop_count: int = scoop_count
         self._price_per_scoop: float = price_per_scoop
+
+        self.packaging = "Bowl"
     
 
     @property
@@ -56,7 +58,7 @@ class IceCream(DessertItem):
         detail = f"{self.scoop_count} scoops @ ${self.price_per_scoop:.2f}/scoop:"
 
         lines = [
-            f"{self.name} Ice Cream",
+            f"{self.name} Ice Cream ({self.packaging})",
             f"{detail:<47} {price_str:<10} {tax_str}"
         ]
 

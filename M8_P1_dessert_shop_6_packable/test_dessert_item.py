@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import pytest
 from cookie import Cookie
+from dessert_item import DessertItem
 
 
 
@@ -48,3 +49,14 @@ class TestDessertItem:
         item = Cookie()
         item.tax_percent = 6.25
         assert item.tax_percent == 6.25
+
+
+    def test_get_packaging(self):
+        item = Cookie()
+        assert item.packaging == "Box"
+
+    
+    def test_set_packaging(self):
+        item = Cookie()
+        item.packaging = "Plate"
+        assert item.packaging == "Plate"

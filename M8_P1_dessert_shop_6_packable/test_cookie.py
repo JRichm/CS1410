@@ -9,58 +9,62 @@ from cookie import Cookie
 
 class TestCookie:
     def test_default(self):
-        cookie = Cookie()
-        assert cookie.name == "BaseCookie"
-        assert cookie.cookie_quantity == 0
-        assert cookie.price_per_dozen == 0.0
+        item = Cookie()
+        assert item.name == "BaseCookie"
+        assert item.cookie_quantity == 0
+        assert item.price_per_dozen == 0.0
 
     
     def test_nominal(self):
-        cookie = Cookie("Chocolate Chip", 12, 16)
-        assert cookie.name == "Chocolate Chip"
-        assert cookie.cookie_quantity == 12
-        assert cookie.price_per_dozen == 16
+        item = Cookie("Chocolate Chip", 12, 16)
+        assert item.name == "Chocolate Chip"
+        assert item.cookie_quantity == 12
+        assert item.price_per_dozen == 16
 
 
     def test_getters(self):
-        cookie = Cookie("Peanut Butter", 6, 18)
-        assert cookie.name == "Peanut Butter"
-        assert cookie.cookie_quantity == 6
-        assert cookie.price_per_dozen == 18
+        item = Cookie("Peanut Butter", 6, 18)
+        assert item.name == "Peanut Butter"
+        assert item.cookie_quantity == 6
+        assert item.price_per_dozen == 18
 
 
     def test_setters(self):
-        cookie = Cookie()
+        item = Cookie()
 
-        cookie.name = "Sugar Cookie"
-        assert cookie.name == "Sugar Cookie"
+        item.name = "Sugar Cookie"
+        assert item.name == "Sugar Cookie"
 
-        cookie.cookie_quantity = 12
-        assert cookie.cookie_quantity == 12
+        item.cookie_quantity = 12
+        assert item.cookie_quantity == 12
 
-        cookie.price_per_dozen = 15.00
-        assert cookie.price_per_dozen == 15.00
-
-        with pytest.raises(TypeError):
-            cookie.cookie_quantity = "invalid cookie_quantity"
-
-        with pytest.raises(ValueError):
-            cookie.cookie_quantity = -1
+        item.price_per_dozen = 15.00
+        assert item.price_per_dozen == 15.00
 
         with pytest.raises(TypeError):
-            cookie.price_per_dozen = "invalid price_per_dozen"
+            item.cookie_quantity = "invalid cookie_quantity"
 
         with pytest.raises(ValueError):
-            cookie.price_per_dozen = -1
+            item.cookie_quantity = -1
+
+        with pytest.raises(TypeError):
+            item.price_per_dozen = "invalid price_per_dozen"
+
+        with pytest.raises(ValueError):
+            item.price_per_dozen = -1
 
 
     def test_calculate_cost(self):
-        cookie = Cookie(cookie_quantity=12, price_per_dozen=1)
-        assert cookie.calculate_cost() == 1
+        item = Cookie(cookie_quantity=12, price_per_dozen=1)
+        assert item.calculate_cost() == 1
 
     
     def test_calculate_tax(self):
-        cookie = Cookie(cookie_quantity=12, price_per_dozen=1)
-        cookie.tax_percent = 100
-        assert cookie.calculate_tax() == 1
+        item = Cookie(cookie_quantity=12, price_per_dozen=1)
+        item.tax_percent = 100
+        assert item.calculate_tax() == 1
 
+
+    def test_packaging(self):
+        item = Cookie()
+        assert item.packaging == "Box"

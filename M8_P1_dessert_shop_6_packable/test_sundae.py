@@ -90,12 +90,16 @@ class TestSundae:
 
 
     def test_calculate_cost(self):
-        cookie = Sundae(scoop_count=1, price_per_scoop=1, topping_price=1)
-        assert cookie.calculate_cost() == 2
+        item = Sundae(scoop_count=1, price_per_scoop=1, topping_price=1)
+        assert item.calculate_cost() == 2
 
     
     def test_calculate_tax(self):
-        cookie = Sundae(scoop_count=1, price_per_scoop=1, topping_price=1)
-        cookie.tax_percent = 50
-        assert cookie.calculate_tax() == 1
+        item = Sundae(scoop_count=1, price_per_scoop=1, topping_price=1)
+        item.tax_percent = 50
+        assert item.calculate_tax() == 1
 
+
+    def test_packaging(self):
+        item = Sundae()
+        assert item.packaging == "Boat"

@@ -4,6 +4,7 @@ class DessertItem(ABC):
     def __init__(self, name: str = "", tax_percent: float = 7.25):
         self._name: str = name
         self._tax_percent: float = tax_percent
+        self._packaging = None
 
 
     @property
@@ -39,3 +40,13 @@ class DessertItem(ABC):
 
     def calculate_tax(self) -> float:
         return round(self.calculate_cost() * self._tax_percent * 0.01, 2)
+
+
+    @property
+    def packaging(self) -> str:
+        return self._packaging
+    
+
+    @packaging.setter
+    def packaging(self, new_packaging: str):
+        self._packaging = new_packaging
