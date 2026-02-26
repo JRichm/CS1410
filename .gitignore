@@ -5,3 +5,5 @@
 .pytest_cache
 *.pyc
 *.pdf
+
+.DS_Store
