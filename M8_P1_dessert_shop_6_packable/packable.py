@@ -5,7 +5,7 @@ class Packable:
     
     @property
     def packaging(self) -> str:
-        return self.packaging
+        return self._packaging
     
 
     @packaging.setter
