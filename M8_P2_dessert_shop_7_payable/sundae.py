@@ -1,4 +1,4 @@
-from ice_cream import IceCream
+from icecream import IceCream
 
 
 

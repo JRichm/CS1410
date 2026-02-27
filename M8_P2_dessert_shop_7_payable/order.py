@@ -1,11 +1,11 @@
 from dessert_item import DessertItem
-from payable import PayType
+from payable import Payable, PayType
 
 
-class Order:
-    def __init__(self):
+class Order(Payable):
+    def __init__(self, payment_method: PayType = PayType.CASH):
         self.order: list[DessertItem] = []
-        self._payment_method: PayType = PayType.CASH
+        self._payment_method = payment_method
 
     
     def add(self, item: DessertItem = None):
@@ -29,16 +29,19 @@ class Order:
             cost_tax += item.calculate_tax()
             
         return round(cost_tax, 2)
-    
+
 
     @property
     def payment_method(self) -> PayType:
         return self._payment_method
-
+    
 
     @payment_method.setter
     def payment_method(self, new_payment_method: PayType):
+        if not isinstance(new_payment_method, PayType):
+            raise TypeError(f"Payment method must be a valid PayType, not {type(new_payment_method)}")
         
+        self._payment_method = new_payment_method
 
 
     def __len__(self) -> int:
@@ -56,5 +59,7 @@ class Order:
         lines.append(f"{'Total number of items in order:':<50} {len(self):>23}")
         
         lines.append("----------------------------------------------------------------------------")
+
+        lines.append(f"Paid for with {self.payment_method.name.capitalize()}")
 
         return "\n".join(lines)
