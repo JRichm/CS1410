@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from dessert_item import DessertItem
 from payable import Payable, PayType
+from combinable import Combinable
 
 
 class Order(Payable):
@@ -8,11 +11,17 @@ class Order(Payable):
         self._payment_method = payment_method
 
     
-    def add(self, item: DessertItem = None):
-        if not item or not isinstance(item, DessertItem):
-            raise TypeError(f"Invalid item type! (`{str(item)}` {type(item)}) Only items of type <class 'DessertItem'> are allowed.")
+    def add(self, new_item: DessertItem = None):
+        if not new_item or not isinstance(new_item, DessertItem):
+            raise TypeError(f"Invalid item type! (`{str(new_item)}` {type(new_item)}) Only items of type <class 'DessertItem'> are allowed.")
 
-        self.order.append(item)
+        if isinstance(new_item, Combinable): # this seems like witchcraft without the explicit inheritance 
+            for item in self.order:
+                if new_item.can_combine(item):
+                    item.combine(new_item)
+                    return
+
+        self.order.append(new_item)
 
 
     def order_cost(self) -> float:

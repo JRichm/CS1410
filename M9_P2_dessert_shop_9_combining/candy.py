@@ -1,5 +1,5 @@
 from dessert_item import DessertItem
-
+from combinable import Combinable
 
 
 class Candy(DessertItem):
@@ -46,6 +46,22 @@ class Candy(DessertItem):
     def calculate_cost(self) -> float:
         return round(self._candy_weight * self._price_per_pound, 2)
     
+
+    def can_combine(self, other: "Candy") -> bool:
+        return (
+            isinstance(other, type(self)) and
+            other.name == self.name and
+            other.price_per_pound == self.price_per_pound
+        )
+    
+
+    def combine(self, other: "Candy") -> "Candy":
+        if not self.can_combine(other):
+            raise TypeError(f"cannot combine {self} and {other}")
+        
+        self.candy_weight += other.candy_weight
+        return self
+
 
     def __repr__(self):
         return f"name: {self.name}, candy_weight: {self.candy_weight}, price_per_pound: {self.price_per_pound}"

@@ -47,6 +47,22 @@ class Cookie(DessertItem):
         return round((self._cookie_quantity / 12) * self._price_per_dozen, 2)
     
 
+    def can_combine(self, other: "Cookie") -> bool:
+        return (
+            isinstance(other, type(self)) and
+            other.name == self.name and
+            other.price_per_dozen == self.price_per_dozen
+        )
+    
+
+    def combine(self, other: "Cookie") -> "Cookie":
+        if not self.can_combine(other):
+            raise TypeError(f"cannot combine {self} and {other}")
+        
+        self.cookie_quantity += other.cookie_quantity
+        return self
+
+
     def __repr__(self):
         return f"name: {self.name}, cookie_quantity: {self.cookie_quantity}, price_per_dozen: {self.price_per_dozen}"
 

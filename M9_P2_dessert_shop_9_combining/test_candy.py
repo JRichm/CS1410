@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import pytest
 from candy import Candy
-
+from icecream import IceCream
 
 
 class TestCandy:
@@ -68,3 +68,44 @@ class TestCandy:
     def test_packaging(self):
         item = Candy()
         assert item.packaging == "Bag"
+
+
+    def test_can_combine_true(self):
+        item_1 = Candy("Gubby Mears", 0.5, 5)
+        item_2 = Candy("Gubby Mears", 0.25, 5)
+        assert item_1.can_combine(item_2)
+
+
+    def test_can_combine_false_type(self):
+        item_1 = Candy("Gubby Mears", 0.5, 5)
+        item_2 = IceCream("Cookies n Cream", 2, 5)
+        assert not item_1.can_combine(item_2)
+
+
+    def test_can_combine_false_name(self):
+        item_1 = Candy("Gubby Mears", 0.5, 5)
+        item_2 = Candy("Gummy Bears", 0.5, 5)
+        assert not item_1.can_combine(item_2)
+
+
+    def test_can_combine_false_price(self):
+        item_1 = Candy("Gubby Mears", 0.5, 5)
+        item_2 = Candy("Gubby Mears", 0.5, 3)
+        assert not item_1.can_combine(item_2)
+
+
+    def test_combine_success(self):
+        item_1 = Candy("Gubby Mears", 0.5, 5)
+        item_2 = Candy("Gubby Mears", 0.25, 5)
+
+        item_3 = item_1.combine(item_2)
+
+        assert item_3.candy_weight == 0.75
+
+
+    def test_combine_fail(self):
+        item_1 = Candy("Gubby Mears", 0.5, 5)
+        item_2 = Candy("Gubby Mears", 0.5, 3)
+
+        with pytest.raises(TypeError):
+            item_3 = item_1.combine(item_2)

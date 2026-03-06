@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import pytest
 from cookie import Cookie
-
+from icecream import IceCream
 
 
 class TestCookie:
@@ -68,3 +68,44 @@ class TestCookie:
     def test_packaging(self):
         item = Cookie()
         assert item.packaging == "Box"
+
+
+    def test_can_combine_true(self):
+        item_1 = Cookie("Beanut Putter", 5, 5)
+        item_2 = Cookie("Beanut Putter", 3, 5)
+        assert item_1.can_combine(item_2)
+
+
+    def test_can_combine_false_type(self):
+        item_1 = Cookie("Beanut Putter", 5, 5)
+        item_2 = IceCream("Cookies n Cream", 2, 5)
+        assert not item_1.can_combine(item_2)
+
+
+    def test_can_combine_false_name(self):
+        item_1 = Cookie("Beanut Putter", 5, 5)
+        item_2 = Cookie("Peanut Butter", 5, 5)
+        assert not item_1.can_combine(item_2)
+
+
+    def test_can_combine_false_price(self):
+        item_1 = Cookie("Beanut Putter", 5, 5)
+        item_2 = Cookie("Beanut Putter", 5, 3)
+        assert not item_1.can_combine(item_2)
+
+
+    def test_combine_success(self):
+        item_1 = Cookie("Beanut Putter", 5, 5)
+        item_2 = Cookie("Beanut Putter", 5, 5)
+
+        item_3 = item_1.combine(item_2)
+
+        assert item_3.cookie_quantity == 10
+
+
+    def test_combine_fail(self):
+        item_1 = Cookie("Beanut Putter", 5, 5)
+        item_2 = Cookie("Beanut Putter", 5, 3)
+
+        with pytest.raises(TypeError):
+            item_3 = item_1.combine(item_2)
