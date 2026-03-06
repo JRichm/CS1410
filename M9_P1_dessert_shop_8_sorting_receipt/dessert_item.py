@@ -1,4 +1,8 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
+
+
 
 class DessertItem(ABC):
     def __init__(self, name: str = "", tax_percent: float = 7.25):
@@ -68,27 +72,27 @@ class DessertItem(ABC):
 
     def __lt__(self, other_item: DessertItem) -> bool:
         if not isinstance(other_item, DessertItem):
-            raise TypeError(f"'<' not supported between instances of '{self.__class__.__name__}' and '{type(other_item)}'")
+            raise TypeError(f"'<' not supported between instances of '{self.__class__.__name__}' and '{other_item.__class__.__name__}'")
         
         return self.calculate_cost() < other_item.calculate_cost()
 
 
     def __gt__(self, other_item: DessertItem) -> bool:
         if not isinstance(other_item, DessertItem):
-            raise TypeError(f"'>' not supported between instances of '{self.__class__.__name__}' and '{type(other_item)}'")
+            raise TypeError(f"'>' not supported between instances of '{self.__class__.__name__}' and '{other_item.__class__.__name__}'")
         
         return self.calculate_cost() > other_item.calculate_cost()
 
 
     def __ge__(self, other_item: DessertItem) -> bool:
         if not isinstance(other_item, DessertItem):
-            raise TypeError(f"'>=' not supported between instances of '{self.__class__.__name__}' and '{type(other_item)}'")
+            raise TypeError(f"'>=' not supported between instances of '{self.__class__.__name__}' and '{other_item.__class__.__name__}'")
         
         return self.calculate_cost() >= other_item.calculate_cost()
 
 
     def __le__(self, other_item: DessertItem) -> bool:
         if not isinstance(other_item, DessertItem):
-            raise TypeError(f"'<=' not supported between instances of '{self.__class__.__name__}' and '{type(other_item)}'")
+            raise TypeError(f"'<=' not supported between instances of '{self.__class__.__name__}' and '{other_item.__class__.__name__}'")
         
         return self.calculate_cost() <= other_item.calculate_cost()
