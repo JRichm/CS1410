@@ -40,6 +40,9 @@ class DessertShop:
         payment_method = self.user_prompt_payment()
         self.order.payment_method = payment_method
 
+        # sort the items in the order by price in ascending order
+        self.order = self.order.sort()
+
         # print the order
         print(self.order)
         
