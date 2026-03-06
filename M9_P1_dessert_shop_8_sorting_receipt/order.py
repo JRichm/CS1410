@@ -44,6 +44,12 @@ class Order(Payable):
         self._payment_method = new_payment_method
 
 
+    def sort(self) -> Order:
+        # sort the items in the order by price in ascending order
+        self.order = sorted(self.order)
+        return self
+
+
     def __len__(self) -> int:
         return len(self.order)
 
