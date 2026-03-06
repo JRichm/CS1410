@@ -50,3 +50,45 @@ class DessertItem(ABC):
     @packaging.setter
     def packaging(self, new_packaging: str):
         self._packaging = new_packaging
+
+
+    def  __eq__(self, other_item: DessertItem) -> bool:
+        if not isinstance(other_item, DessertItem):
+            return False
+        
+        return self.calculate_cost() == other_item.calculate_cost()
+
+    
+    def __ne__(self, other_item: DessertItem) -> bool:
+        if not isinstance(other_item, DessertItem):
+            return True
+        
+        return self.calculate_cost() != other_item.calculate_cost()
+
+
+    def __lt__(self, other_item: DessertItem) -> bool:
+        if not isinstance(other_item, DessertItem):
+            raise TypeError(f"'<' not supported between instances of '{self.__class__.__name__}' and '{type(other_item)}'")
+        
+        return self.calculate_cost() < other_item.calculate_cost()
+
+
+    def __gt__(self, other_item: DessertItem) -> bool:
+        if not isinstance(other_item, DessertItem):
+            raise TypeError(f"'>' not supported between instances of '{self.__class__.__name__}' and '{type(other_item)}'")
+        
+        return self.calculate_cost() > other_item.calculate_cost()
+
+
+    def __ge__(self, other_item: DessertItem) -> bool:
+        if not isinstance(other_item, DessertItem):
+            raise TypeError(f"'>=' not supported between instances of '{self.__class__.__name__}' and '{type(other_item)}'")
+        
+        return self.calculate_cost() >= other_item.calculate_cost()
+
+
+    def __le__(self, other_item: DessertItem) -> bool:
+        if not isinstance(other_item, DessertItem):
+            raise TypeError(f"'<=' not supported between instances of '{self.__class__.__name__}' and '{type(other_item)}'")
+        
+        return self.calculate_cost() <= other_item.calculate_cost()
