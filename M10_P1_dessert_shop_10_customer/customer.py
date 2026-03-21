@@ -22,7 +22,7 @@ class Customer:
     
 
     @customer_name.setter
-    def customer_name(self, new_customer_name):
+    def customer_name(self, new_customer_name: str):
         self._customer_name = new_customer_name
 
         
