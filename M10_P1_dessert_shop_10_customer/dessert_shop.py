@@ -17,36 +17,38 @@ from validators import (
 
 class DessertShop:
     def __init__(self):
+        self.running = True
         self.main()
 
 
     def main(self):
-        self.order = Order()
+        while self.running:
+            self.order = Order()
 
-        # add default items
-        self.seed_order()
+            # add default items
+            self.seed_order()
 
-        # ask user to add items to the order
-        done: bool = False
-        while not done:
-            try:
-                done = self.user_prompt_item() is None
+            # ask user to add items to the order
+            done: bool = False
+            while not done:
+                try:
+                    done = self.user_prompt_item() is None
 
-            except ValueError as e:
-                print(e) 
+                except ValueError as e:
+                    print(e) 
 
 
-        # ask user to choose a payment type
-        payment_method = self.user_prompt_payment()
-        self.order.payment_method = payment_method
+            # ask user to choose a payment type
+            payment_method = self.user_prompt_payment()
+            self.order.payment_method = payment_method
 
-        # sort the items in the order by price in ascending order
-        self.order = self.order.sort()
+            # sort the items in the order by price in ascending order
+            self.order = self.order.sort()
 
-        # print the order
-        print(self.order)
-        
-        print("\n")
+            # print the order
+            print(self.order)
+
+            input("\nPress <Enter> to start a new order.")
 
 
     def seed_order(self):
