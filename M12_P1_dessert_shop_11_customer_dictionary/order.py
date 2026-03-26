@@ -64,7 +64,7 @@ class Order(Payable):
 
 
     def __str__(self):
-        lines = ["----------------------------Dessert Shop Receipt----------------------------"]
+        lines = ["\n----------------------------Dessert Shop Receipt----------------------------"]
         lines = lines + [str(o) for o in self.order]
 
         lines.append("----------------------------------------------------------------------------")

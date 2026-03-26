@@ -1,5 +1,4 @@
-from tabulate import tabulate
-
+from customer import Customer
 from order import Order
 from candy import Candy
 from cookie import Cookie
@@ -7,6 +6,7 @@ from icecream import IceCream
 from sundae import Sundae
 from payable import PayType
 from dessert_item import DessertItem
+
 
 
 from validators import (
@@ -22,7 +22,11 @@ class DessertShop:
 
 
     def main(self):
+        customer_db: dict[str, Customer] = {}
+
         while self.running:
+            print("---Beginning New Order---\n")
+
             self.order = Order()
 
             # add default items
@@ -37,6 +41,8 @@ class DessertShop:
                 except ValueError as e:
                     print(e) 
 
+            customer = self.save_customer_order(self.order, customer_db)
+
 
             # ask user to choose a payment type
             payment_method = self.user_prompt_payment()
@@ -47,9 +53,30 @@ class DessertShop:
 
             # print the order
             print(self.order)
+            print(f"-"*76)
+            print(f"Customer Name: {customer.customer_name:<23} Customer ID: {customer.customer_id:>6}  Total Orders: {len(customer.order_history)}")
+
 
             input("\nPress <Enter> to start a new order.")
+            print("\n")
 
+
+    def save_customer_order(self, order: Order, customer_db: dict[str, Customer]) -> Customer:
+
+        # get customer name from user input
+        customer_name = input("\nPlease enter the customer's name: ").strip()
+
+        # add customer to db if user not found
+        if customer_name not in customer_db:
+            customer_db[customer_name] = Customer(customer_name)
+
+        # get customer from db and add order to history
+        customer = customer_db[customer_name]
+        customer.add2history(order)
+
+        # return customer
+        return customer
+    
 
     def seed_order(self):
         """
