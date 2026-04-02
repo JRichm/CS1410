@@ -7,12 +7,13 @@ from sundae import Sundae
 from payable import PayType
 from dessert_item import DessertItem
 
-
-
 from validators import (
     get_valid_int,
     get_valid_float
 )
+
+MENU_WIDTH = 75
+
 
 
 class DessertShop:
@@ -23,20 +24,21 @@ class DessertShop:
 
     def main(self):
         customer_db: dict[str, Customer] = {}
+        customer_db = self.seed_customer_db(customer_db)
 
         while self.running:
-            print("---Beginning New Order---\n")
+            print("---Beginning New Order---")
 
             self.order = Order()
 
             # add default items
-            self.seed_order()
+            self.order = self.seed_order(self.order)
 
             # ask user to add items to the order
             done: bool = False
             while not done:
                 try:
-                    done = self.user_prompt_item() is None
+                    done = self.user_prompt_item(customer_db) is None
 
                 except ValueError as e:
                     print(e) 
@@ -64,7 +66,9 @@ class DessertShop:
     def save_customer_order(self, order: Order, customer_db: dict[str, Customer]) -> Customer:
 
         # get customer name from user input
-        customer_name = input("\nPlease enter the customer's name: ").strip()
+        customer_name = None
+        while not customer_name:
+            customer_name = input("\nPlease enter the customer's name: ").strip()
 
         # add customer to db if user not found
         if customer_name not in customer_db:
@@ -72,25 +76,81 @@ class DessertShop:
 
         # get customer from db and add order to history
         customer = customer_db[customer_name]
-        customer.add2history(order)
+        customer.add_to_history(order)
 
         # return customer
         return customer
     
 
-    def seed_order(self):
+    def seed_order(self, order):
         """
             Seed order with the default items
         """
-        self.order.add(Candy('Candy Corn', 1.5, 0.25))
-        self.order.add(Candy('Gummy Bears', 0.25, 0.35))
-        self.order.add(Cookie('Chocolate Chip', 6, 3.99))
-        self.order.add(IceCream('Pistachio', 2, 0.79))
-        self.order.add(Sundae('Vanilla', 3, 0.69, 'Hot Fudge', 1.29))
-        self.order.add(Cookie('Oatmeal Raisin', 2, 3.45))
+        order.add(Candy('Gummy Bears', 0.25, 0.35))
+        order.add(Candy('Candy Corn', 1.5, 0.25))
+        order.add(Cookie('Oatmeal Raisin', 2, 3.45))
+        order.add(IceCream('Pistachio', 2, 0.79))
+        order.add(Cookie('Chocolate Chip', 6, 3.99))
+        order.add(Sundae('Vanilla', 3, 0.69, 'Hot Fudge', 1.29))
+
+        return order
 
 
-    def user_prompt_item(self) -> DessertItem:
+    def seed_customer_db(self, customer_db: dict):
+        # James
+        james = Customer("James")
+
+        james_order = Order(PayType.CARD)
+        james_order = self.seed_order(james_order)
+
+        james_order.add(Candy("Brocks", .01, .1))
+        james_order.add(Candy("Molasses Gum", 0.1, .1))
+        james_order.add(Cookie("Chocolate Chip", 1, 12))
+        james_order.add(Cookie("Snickerdoodles", 1, 9))
+        james_order.add(Cookie("Sugar", 1, 6))
+        james_order.add(IceCream("Strawberry", 1, .5))
+        james_order.add(IceCream("Vanilla", 1, .3))
+
+        james.add_to_history(james_order)
+
+        # Karis
+        karis = Customer("Karis")
+
+        karis_order_1 = Order(PayType.CARD)
+        karis_order_1 = self.seed_order(karis_order_1)
+        karis.add_to_history(karis_order_1)
+
+        karis_order_2 = Order(PayType.CARD)
+        karis_order_2 = self.seed_order(karis_order_2)
+        karis.add_to_history(karis_order_2)
+
+        karis_order_3 = Order(PayType.CARD)
+        karis_order_3 = self.seed_order(karis_order_3)
+        karis.add_to_history(karis_order_3)
+
+        karis_order_4 = Order(PayType.CARD)
+        karis_order_4 = self.seed_order(karis_order_4)
+        karis.add_to_history(karis_order_4)
+
+        # Mei
+        mei = Customer("Mei")
+
+        mei_order = Order(PayType.PHONE)
+
+        mei_order.add(Candy("Snickers", 5, 9.85))
+        mei_order.add(Candy("Reces", 5, 9.85))
+        mei_order.add(Cookie("Chocolate Chip", 36, 12))
+        mei_order.add(Cookie("White Chocolate Macadamia", 36, 18))
+
+        mei.add_to_history(mei_order)
+
+        for customer in [james, karis, mei]:
+            customer_db[customer.customer_name] = customer
+
+        return customer_db
+
+
+    def user_prompt_item(self, customer_db) -> DessertItem:
         """
             Provides User with a menu of items asks for input using children functions
             to handle each item type
@@ -101,11 +161,13 @@ class DessertShop:
         Returns:
             DessertItem: The item the user has chosen
         """
-        print("\n1: Candy")
+        self.print_header("Main Menu", width = 30)
+        print("1: Candy")
         print("2: Cookie")
         print("3: Ice Cream")
         print("4: Sunday")
-        choice = input("\nWhat would you like to add to the order? (1-4 or press <Enter> when done): ")
+        choice = input("\nWhat would you like to add to the order? (1-4, <5> for Admin, <Enter> for done): ")
+
 
         match choice:
             case "":
@@ -123,6 +185,10 @@ class DessertShop:
             case "4":
                 item = self.user_prompt_sundae()
             
+            case "5":
+                self.admin_menu(customer_db)
+                return True
+
             case _:
                 raise ValueError("Invalid response:  Please enter a choice from the menu (1-4) or press <Enter> when done.")
             
@@ -210,7 +276,7 @@ class DessertShop:
             warning="Error. Number of scoops must be a positive whole number.",
             low=0
         )
-        price = float = get_valid_float(
+        price: float = get_valid_float(
             prompt="Please enter the price per scoop: ",
             warning="Error. Price per scoop must be a positive number.",
             low=0
@@ -251,6 +317,157 @@ class DessertShop:
                 return paytype
             
             print("\nInvalid Response: Please enter a valid payment type")
+
+
+    def admin_menu(self, customer_db: dict):
+        # print("******************************")
+        # print("*"*30)
+        # print("**        Admin Menu        **")
+        # print("*"*30)
+
+
+        options = [
+            "Shop's Customer List",
+            "Customer Order History",
+            "Most Frequent Customer",
+            "Best Customer",
+            "Customer With Largest Order"
+        ]
+
+        admin = True
+        while admin:
+            print("\n")
+            self.print_header("Admin Menu", width=30)
+            for x, option in enumerate(options):
+                print(f"{x+1}: {option}")
+
+            choice = input(f"What would you like to do? (1-{len(options)}, <Enter> to return to the previous menu): ")
+
+            match choice:
+                case "1":
+                    self.store_customer_list(customer_db)
+                case "2":
+                    self.customer_order_history(customer_db)
+                case "3":
+                    self.most_frequent_customer(customer_db)
+                case "4":
+                    self.best_customer(customer_db)
+                case "5":
+                    self.biggest_order(customer_db)
+                case "":
+                    print("\n")
+                    return
+
+    
+    def print_header(self, message: str, sub_message: tuple = (), width: int = 30):
+        width = width + 1
+        w = width - 4
+
+        # print("\n\n")
+        print("*"*width)
+        print(f"**{message:^{w}}**")
+        if sub_message:
+            print(f"**   {sub_message[0]}{sub_message[1]:>{width-len(sub_message[0]) - 10}}   **")
+        print("*"*width)
+
+
+    def store_customer_list(self, customer_db: dict[str,Customer]) -> None:
+        '''
+        Displays a list of all Dessert Shop customers and their Customer IDs in a nice format, as shown in the Example Run.
+        This function should NOT use the dictionary key to parse through each customer in the customer_db dictionary
+        (Refer to your reading and video assignments).
+        '''
+
+        print("\n\n")
+        self.print_header(message="Dessert Shop Customer List", width=MENU_WIDTH)
+
+        for name, customer in customer_db.items():
+            row = (f"Customer Name: {name}", f"Customer ID: {customer.customer_id}")
+            print(f"{row[0]} {row[1]:>{MENU_WIDTH-len(row[0])}}")
+
+
+    def customer_order_history(self, customer_db: dict[str,Customer]) -> None:
+        '''
+        Prompts the user for a customer name and then prints all orders (receipts) for that customer, labeling each
+        receipt with a sequential order number, as shown in the Example Run. If the user enters a name that is not in
+        the customer_db dictionary, provide an error message as shown in the Example Run. This function should use
+        enumerate to retrieve both the order details and generate an order number.
+        '''
+
+        print("\n\n")
+        self.print_header(message="Customer Order History", width=MENU_WIDTH)
+
+        customer_name = input("Please enter the customer's name: ")
+
+        customer = customer_db.get(customer_name, None)
+        if customer is None:
+            print(f"Error. The Dessert Shop customer list does not contain a customer named '{customer_name}'.\nCheck both spelling and capitalizaiton of your entry.")
+            return False
+        
+
+        print("\n\n")
+        self.print_header(message="Order History For:", sub_message=(f"Customer Name: {customer_name}", f"Customer ID: {customer.customer_id}"), width=MENU_WIDTH)
+
+        for order_number, order in enumerate(customer.order_history):
+            print(f"\n\nOrder # {order_number + 1}")
+            print(order)
+
+
+    def most_frequent_customer(self, customer_db: dict[str,Customer]) -> None:
+        '''
+        Displays a banner showing the Most Frequent Customer AND the number of orders they have made, based on the
+        number of orders each customer has made, as shown in the Example Run. Do NOT use a for loop in this function.
+        This function requires you to find two values using the following Pythonic and/or object-oriented approaches:
+        This function should use the max() function, with the key defined by a lambda function that returns the size of
+        each customer's order history. Once you have found the Most Frequent Customer, finding the number of orders
+        that customer has made is trivial using OOP.
+        '''
+
+        sorted_customers = sorted(customer_db.items(), key=lambda item: len(item[1].order_history))
+        name, customer = sorted_customers[-1]
+        
+        print("\n\n")
+        self.print_header(message=f"{customer.customer_name} is the most frequent customer with {len(customer.order_history)} order(s)!", width=MENU_WIDTH)
+
+
+    def best_customer(self, customer_db: dict[str,Customer]) -> None:
+        '''
+        Displays a banner showing the Best Customer AND the total amount of money they have spent, based on each customer's
+        total spend at the shop, as shown in the Example Run. Do NOT use a for loop in this function. This function
+        requires you to find two values using the following Pythonic and/or object-oriented approaches:
+            To find the Best Customer, this function should:
+                Use the max() function
+                Have a key in the max() function defined by a lambda function
+                Have a lambda function where the body of the lambda is the sum() of an iterable of order costs
+                Use the sum() function with an iterable of order costs generated by a list comprehension
+                Find the Best Customer in a single written line of code using the formula outlined here.
+            To find the total spent by the Best Customer, this function should:
+                Use the sum() function with an iterable of order costs generated by a list comprehension
+                Calculate the total spent in a single written line of code using the formula outlined here.
+        '''
+
+        sorted_customers = sorted(customer_db.items(), key=lambda item: sum([o.order_cost() for o in item[1].order_history]))
+        name, customer = sorted_customers[-1]
+        customer_total = sum([o.order_cost() for o in customer.order_history])
+        
+        print("\n\n")
+        self.print_header(message=f"{customer.customer_name} is the best customer having spent ${customer_total} at the Dessert Shop!", width=MENU_WIDTH)
+
+
+    def biggest_order(self, customer_db: dict[str,Customer]) -> None:
+        '''
+        Displays a banner showing the customer who made the order with the most items in it AND the total number of items
+        in that order, as shown in the Example Run. You may use any approach you want to write this function (except for
+        hard-coding the printout to contain the right answer). Expect that the test for grading will not match the Example
+        Run to prevent hard-coded answers from being accepted. (Plus, the instructor personally reviews all code)
+        '''
+
+        sorted_customers = sorted(customer_db.items(), key=lambda item: max([len(o) for o in item[1].order_history]))
+        name, customer = sorted_customers[-1]
+        largest_order = max(customer.order_history, key=lambda o: len(o))
+
+        print("\n\n")
+        self.print_header(message=f"{customer.customer_name} made the largest order with a whopping {len(largest_order)} items!", width=MENU_WIDTH)
 
 
 

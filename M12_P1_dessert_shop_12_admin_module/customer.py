@@ -31,5 +31,5 @@ class Customer:
         return self._order_history
 
     
-    def add2history(self, order: Order) -> Customer:
+    def add_to_history(self, order: Order) -> "Customer":
         self._order_history.append(order)

@@ -42,7 +42,7 @@ class TestDessertItem:
         order.add(item)
 
         customer = Customer()
-        customer.add2history(order)
+        customer.add_to_history(order)
 
         assert customer.order_history == [order]
 
