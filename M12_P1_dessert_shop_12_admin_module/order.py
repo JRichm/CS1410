@@ -64,13 +64,16 @@ class Order(Payable):
 
 
     def __str__(self):
+
+        order_total = round(self.order_cost() + self.order_tax(), 2)
+
         lines = ["\n----------------------------Dessert Shop Receipt----------------------------"]
         lines = lines + [str(o) for o in self.order]
 
         lines.append("----------------------------------------------------------------------------")
         
         lines.append(f"{'Order Subtotals:':<50} {'$' + str(self.order_cost()):>7} {'$' + str(self.order_tax()):>15}")
-        lines.append(f"{'Order Total:':<50} {'$' + str(self.order_cost() + self.order_tax()):>23}")
+        lines.append(f"{'Order Total:':<50} {'$' + str(order_total):>23}")
         lines.append(f"{'Total number of items in order:':<50} {len(self):>23}")
         
         lines.append("----------------------------------------------------------------------------")
