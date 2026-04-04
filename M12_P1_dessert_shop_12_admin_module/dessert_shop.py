@@ -375,8 +375,8 @@ class DessertShop:
             print(f"No customers yet.")
             return
 
-        for name, customer in customer_db.items():
-            row = (f"Customer Name: {name}", f"Customer ID: {customer.customer_id}")
+        for customer in customer_db.values():
+            row = (f"Customer Name: {customer.customer_name}", f"Customer ID: {customer.customer_id}")
             print(f"{row[0]} {row[1]:>{BANNER_WIDTH-len(row[0])}}")
 
 
@@ -425,9 +425,7 @@ class DessertShop:
             print("No customers yet")
             return
 
-
-        sorted_customers = sorted(customer_db.items(), key=lambda item: len(item[1].order_history))
-        name, customer = sorted_customers[-1]
+        name, customer = max(customer_db.items(), key=lambda item: len(item[1].order_history))
         
         print("\n\n")
         self.print_header(message=f"{customer.customer_name} is the most frequent customer with {len(customer.order_history)} order(s)!", width=BANNER_WIDTH)
@@ -453,8 +451,7 @@ class DessertShop:
             print("No customers yet")
             return
 
-        sorted_customers = sorted(customer_db.items(), key=lambda item: sum([o.order_cost() for o in item[1].order_history]))
-        name, customer = sorted_customers[-1]
+        name, customer = max(customer_db.items(), key=lambda item: sum([o.order_cost() for o in item[1].order_history]))
         customer_total = sum([o.order_cost() for o in customer.order_history])
     
         print("\n\n")
@@ -473,8 +470,7 @@ class DessertShop:
             print("No customers yet")
             return
 
-        sorted_customers = sorted(customer_db.items(), key=lambda item: max([len(o) for o in item[1].order_history]))
-        name, customer = sorted_customers[-1]
+        name, customer = max(customer_db.items(), key=lambda item: max([len(o) for o in item[1].order_history]))
         largest_order = max(customer.order_history, key=lambda o: len(o))
 
         print("\n\n")
